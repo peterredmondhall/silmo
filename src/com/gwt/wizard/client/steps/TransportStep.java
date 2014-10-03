@@ -1,0 +1,96 @@
+package com.gwt.wizard.client.steps;
+
+import static com.gwt.wizard.client.GwtWizard.MESSAGES;
+
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.gwt.wizard.client.core.WizardStep;
+import com.gwt.wizard.client.steps.ui.TransportStepUi;
+import com.gwt.wizard.client.steps.ui.TransportStepUi.PassengerDetail;
+import com.gwt.wizard.shared.model.BookingInfo;
+
+public class TransportStep implements WizardStep
+{
+
+    private final TransportStepUi ui;
+    private final BookingInfo bookingInfo;
+    private static DateTimeFormat sdf = DateTimeFormat.getFormat("dd.MM.yyyy");
+
+    public TransportStep(BookingInfo bookingInfo)
+    {
+        ui = new TransportStepUi();
+        this.bookingInfo = bookingInfo;
+    }
+
+    @Override
+    public String getCaption()
+    {
+        return MESSAGES.firstPage();
+    }
+
+    @Override
+    public Composite getContent()
+    {
+        return ui;
+    }
+
+    @Override
+    public Boolean onNext()
+    {
+        ui.getErrMsg().setText("");
+
+        if (ui.getDateBox().getValue() == null)
+        {
+            ui.getErrMsg().setText(MESSAGES.dateRequiredError());
+            return false;
+        }
+
+        bookingInfo.setDate(sdf.format(ui.getDateBox().getValue()));
+
+        bookingInfo.setForwardPickupPlace(ui.getForwardPickup());
+
+        bookingInfo.setReturnPickupPlace(ui.getReturnPickup());
+
+        bookingInfo.setForwardPickupTime(ui.getForwardTimeBox().getItemText(ui.getForwardTimeBox().getSelectedIndex()));
+        bookingInfo.setReturnPickupTime(ui.getReturnTimeBox().getItemText(ui.getReturnTimeBox().getSelectedIndex()));
+
+        bookingInfo.setPax(ui.getPassengerDetail(PassengerDetail.TOT_PASS));
+        bookingInfo.setPaxRollatoren(ui.getPassengerDetail(PassengerDetail.PASS_WITH_ROLLATOR));
+        bookingInfo.setPaxFoldableWheelchair(ui.getPassengerDetail(PassengerDetail.PASS_WITH_FOLDABLE));
+        bookingInfo.setPaxRollstuhl(ui.getPassengerDetail(PassengerDetail.PASS_REQ_WHEELCHAIR));
+        bookingInfo.setWithReturn(ui.getWithReturn());
+
+        return true;
+    }
+
+    private String getPickup(ListBox listBox, SuggestBox suggestBox)
+    {
+        String selection = listBox.getItemText(listBox.getSelectedIndex());
+        if (selection.equals(TransportStepUi.OTHER))
+        {
+            selection = suggestBox.getText();
+        }
+        return selection;
+    }
+
+    @Override
+    public Boolean onBack()
+    {
+        return true;
+    }
+
+    @Override
+    public void clear()
+    {
+        ui.getDateBox().setValue(null);
+    }
+
+    public Date getValue()
+    {
+        return ui.getDateBox().getValue();
+    }
+}

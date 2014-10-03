@@ -1,0 +1,149 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+
+	<ui:with field='messages' type='com.gwt.wizard.client.resources.ClientMessages' />
+
+	<ui:style>
+
+	</ui:style>
+
+	<g:HTMLPanel ui:field="mainPanel">
+		<g:Label>Hier ist eine Zusammenfassung Ihrer Bestellung:</g:Label>
+		<g:Grid>
+			<!-- Datum -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Datum des Veranstaltung</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelDate" />
+				</g:customCell>
+			</g:row>
+			<!-- Hinfahrt von -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Hinfahrt von</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelForwardPickupPlace" />
+				</g:customCell>
+			</g:row>
+			<!-- Abholung am von -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Hinfahrt um</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelForwardPickupTime" />
+				</g:customCell>
+			</g:row>
+			<!-- Rückfahr von -->
+			<g:row  styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label ui:field="labelRPP">Rückfahrt von</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelReturnPickupPlace" />
+				</g:customCell>
+			</g:row>
+			<!-- Abholung am von -->
+			<g:row  styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label ui:field="labelRPT">Rückfahrt um</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelReturnPickupTime" />
+				</g:customCell>
+			</g:row>
+			<!-- Total no. passengers -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Gesamtanzahl Passagiere</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelPax" />
+				</g:customCell>
+			</g:row>
+			<!-- Davon -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Davon</g:Label>
+				</g:customCell>
+			</g:row>
+			<!-- Passengers with rollatoren -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Passagiere mit Rollatoren</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelPaxWithRollatoren" />
+				</g:customCell>
+			</g:row>
+			<!-- Passengers with foldable wheelchair -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Passagiere mit klappbarem Rollstuhl</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelPaxWithFoldableWheelchair" />
+				</g:customCell>
+			</g:row>
+			<!-- Passengers with foldable wheelchair -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Passagiere mit Rollstuhltransport</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelPaxWithWheelchair" />
+				</g:customCell>
+			</g:row>
+
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Name des Organizators</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelOrganizerName" />
+				</g:customCell>
+			</g:row>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Email des Organizators</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelOrganizerEmail" />
+				</g:customCell>
+			</g:row>
+
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Name des Begleiters</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelCompanionName" />
+				</g:customCell>
+			</g:row>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Email des Begleiters</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelCompanionEmail" />
+				</g:customCell>
+			</g:row>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Andere Anforderungen</g:Label>
+				</g:customCell>
+				<g:customCell>
+					<g:Label ui:field="labelRequirements" />
+				</g:customCell>
+			</g:row>
+			
+
+		</g:Grid>
+
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

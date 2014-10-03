@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+
+	<ui:with field='messages' type='com.gwt.wizard.client.resources.ClientMessages' />
+
+	<ui:style>
+		
+	</ui:style>
+
+	<g:HTMLPanel ui:field="mainPanel">
+		<div class="labelDiv">
+			<label class="label">
+				<ui:text from="{messages.places}" />
+			</label>
+		</div>
+		<div class="widgetDiv">
+			<g:ListBox ui:field="listBox" width="200px" />
+		</div>
+		<div class="errMsgDiv">
+			<g:Label styleName="errMsg" ui:field="errMsg"></g:Label>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

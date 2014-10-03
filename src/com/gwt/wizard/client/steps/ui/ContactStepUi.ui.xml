@@ -1,0 +1,64 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+
+	<ui:with field='messages' type='com.gwt.wizard.client.resources.ClientMessages' />
+
+	<ui:style>
+
+	</ui:style>
+
+	<g:HTMLPanel ui:field="mainPanel">
+		<g:Grid>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Name des Organizators</g:Label>
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:TextBox ui:field="organizerName" />
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:Label styleName="errMsg" ui:field="organizerNameErrorMsg"></g:Label>
+				</g:customCell>
+			</g:row>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Email des Organizators (für die Bestätigung)</g:Label>
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:TextBox ui:field="organizerEmail" />
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:Label styleName="errMsg" ui:field="organizerEmailErrorMsg"></g:Label>
+				</g:customCell>
+			</g:row>
+<!-- 		</g:Grid> -->
+
+<!-- 		<g:Grid> -->
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Name des Begleiters</g:Label>
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:TextBox ui:field="companionName" />
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:Label styleName="errMsg" ui:field="companionNameErrorMsg"></g:Label>
+				</g:customCell>
+			</g:row>
+			<g:row styleName="optionalHeaderStyle">
+				<g:customCell styleName="labelDiv">
+					<g:Label>Email des Begleiters (für die Fahrschecks)</g:Label>
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:TextBox ui:field="companionEmail" />
+				</g:customCell>
+				<g:customCell styleName="optionalBarCellStyle">
+					<g:Label styleName="errMsg" ui:field="companionEmailErrorMsg"></g:Label>
+				</g:customCell>
+			</g:row>
+		</g:Grid>
+
+	</g:HTMLPanel>
+
+</ui:UiBinder> 
