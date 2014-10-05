@@ -7,10 +7,13 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import com.gwt.wizard.server.entity.Booking;
+import com.gwt.wizard.server.entity.Config;
 import com.gwt.wizard.server.entity.Place;
+import com.gwt.wizard.server.entity.Profil;
 import com.gwt.wizard.server.jpa.EMF;
 import com.gwt.wizard.shared.model.BookingInfo;
 import com.gwt.wizard.shared.model.PlaceInfo;
+import com.gwt.wizard.shared.model.ProfilInfo;
 
 /**
  * The server-side implementation of the RPC service.
@@ -33,8 +36,8 @@ public class BookingManager
         try
         {
             em.getTransaction().begin();
-
-            Booking booking = Booking.getBooking(bookingInfo, forwardPickupPlaceInfo.getId(), returnPickupPlaceInfo.getId());
+            int numBookings = getBookings().size();
+            Booking booking = Booking.getBooking(numBookings, bookingInfo, forwardPickupPlaceInfo.getId(), returnPickupPlaceInfo.getId());
             em.persist(booking);
             em.getTransaction().commit();
             success = true;
@@ -73,4 +76,50 @@ public class BookingManager
         }
         return bookings;
     }
+
+    public ProfilInfo getProfil()
+    {
+        EntityManager em = getEntityManager();
+        Profil profil = null;
+        try
+        {
+            Config config = null;
+            List<Config> configList = em.createQuery("select t from Config t").getResultList();
+            if (configList.size() == 0)
+            {
+                em.getTransaction().begin();
+                config = new Config();
+                config.setProfil("test");
+                em.persist(config);
+                em.getTransaction().commit();
+            }
+            else
+            {
+                config = configList.get(0);
+            }
+            logger.info("Using config profil:" + config.getProfil());
+
+            List<Profil> profilList = em.createQuery("select t from Profil t where name ='" + config.getProfil() + "'").getResultList();
+
+            if (profilList.size() == 0)
+            {
+                em.getTransaction().begin();
+                profil = Profil.getDefault();
+                em.persist(profil);
+                em.getTransaction().commit();
+                em.detach(profil);
+            }
+            else
+            {
+                profil = profilList.get(0);
+                logger.info("Using config profil:" + profil.getName());
+            }
+        }
+        finally
+        {
+            em.close();
+        }
+        return profil.getInfo();
+    }
+
 }

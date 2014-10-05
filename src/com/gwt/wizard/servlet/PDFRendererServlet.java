@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.gwt.wizard.server.BookingManager;
 import com.gwt.wizard.server.BookingServiceImpl;
 import com.gwt.wizard.server.entity.Booking;
 import com.gwt.wizard.server.jpa.EMF;
 import com.gwt.wizard.server.util.Mailer;
 import com.gwt.wizard.server.util.PdfUtil;
+import com.gwt.wizard.shared.model.ProfilInfo;
 
 public class PDFRendererServlet extends HttpServlet
 {
@@ -23,6 +25,7 @@ public class PDFRendererServlet extends HttpServlet
      */
     private static final long serialVersionUID = 1L;
     BookingServiceImpl bookingService = new BookingServiceImpl();
+    BookingManager bookingManager = new BookingManager();
     private final Logger LOGGER = Logger.getLogger("PDFRendererServlet");
 
     @Override
@@ -53,7 +56,9 @@ public class PDFRendererServlet extends HttpServlet
 
                         if (action != null && "sendOrderTaxiEmail".equals(action))
                         {
-                            if (Mailer.send(booking.getOrganizerEmail(), "TAXI ORDER", bytes))
+                            ProfilInfo profilInfo = bookingManager.getProfil();
+
+                            if (Mailer.send(profilInfo.getTaxiFax() + ProfilInfo.BLUE_FAX, "TAXI ORDER", bytes))
                             {
                                 try
                                 {

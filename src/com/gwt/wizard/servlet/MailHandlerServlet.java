@@ -12,17 +12,12 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-import com.gwt.wizard.client.util.EncryptionUtil;
-import com.gwt.wizard.server.entity.Booking;
-import com.gwt.wizard.server.jpa.EMF;
-import com.gwt.wizard.server.util.PdfUtil;
 import com.itextpdf.text.pdf.PdfReader;
 
 public class MailHandlerServlet extends HttpServlet
@@ -159,35 +154,35 @@ public class MailHandlerServlet extends HttpServlet
                         InputStream is = (InputStream) content;
                         PdfReader pdfReader = new PdfReader(is);
 
-                        LOGGER.info("ENCODED_ID Field: " + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY));
-                        if (EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) != null)
-                        {
-                            LOGGER.info("Booking ID: " + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + "Found!!");
-                            EntityManager em = EMF.get().createEntityManager();
-                            try
-                            {
-                                Booking booking = em.find(Booking.class, Long.parseLong(EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY)));
-                                if (booking != null)
-                                {
-                                    booking.setOrderStatus("CONFIRMATION_RECEIVED");
-                                    em.persist(booking);
-                                    LOGGER.info("Booking(" + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + ") order status set to 'CONFIRMATION_RECEIVED'");
-                                }
-                                else
-                                {
-                                    LOGGER.info("Booking(" + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + ") not found");
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                LOGGER.info("Error Occured: " + e.getStackTrace().toString());
-                            }
-                            finally
-                            {
-                                em.close();
-                            }
-
-                        }
+//                        LOGGER.info("ENCODED_ID Field: " + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY));
+//                        if (EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) != null)
+//                        {
+//                            LOGGER.info("Booking ID: " + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + "Found!!");
+//                            EntityManager em = EMF.get().createEntityManager();
+//                            try
+//                            {
+//                                Booking booking = em.find(Booking.class, Long.parseLong(EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY)));
+//                                if (booking != null)
+//                                {
+//                                    booking.setOrderStatus("CONFIRMATION_RECEIVED");
+//                                    em.persist(booking);
+//                                    LOGGER.info("Booking(" + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + ") order status set to 'CONFIRMATION_RECEIVED'");
+//                                }
+//                                else
+//                                {
+//                                    LOGGER.info("Booking(" + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) + ") not found");
+//                                }
+//                            }
+//                            catch (Exception e)
+//                            {
+//                                LOGGER.info("Error Occured: " + e.getStackTrace().toString());
+//                            }
+//                            finally
+//                            {
+//                                em.close();
+//                            }
+//
+//                        }
                         LOGGER.info("Taxi Number: " + pdfReader.getAcroFields().getField("NUMTAXI").toString());
                         messageString = IOUtils.toString(is, "UTF-8");
                         LOGGER.info("Multipart Message: " + messageString);

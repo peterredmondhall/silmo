@@ -43,6 +43,26 @@ public class Booking implements Serializable
     private int noTaxi;
     private String orderStatus;
 
+    private static final String[] NAMES = {
+            "Anton", "Berta", "Charlie", "Charlotte", "Dora", "Emil", "Friedrich", "Gustav", "Heinrich", "Ida",
+            "Julius", "Kaufmann", "Ludwig", "Martha", "Nordpol", "Otto", "Paula", "Quelle", "Richard", "Samuel",
+            "Theodor", "Ulrich", "Viktor", "Wilhelm"
+    };
+
+    private Booking()
+    {
+
+    }
+
+    public static Booking createBooking(int i)
+    {
+        int index = i % NAMES.length;
+        Booking booking = new Booking();
+        booking.setReference(NAMES[index]);
+        return booking;
+
+    }
+
     public Key getKey()
     {
         return key;
@@ -223,9 +243,9 @@ public class Booking implements Serializable
         this.pdf = pdf;
     }
 
-    public static Booking getBooking(BookingInfo bookingInfo, Long forwardPickupPlaceId, Long returnPickupPlaceId)
+    public static Booking getBooking(int i, BookingInfo bookingInfo, Long forwardPickupPlaceId, Long returnPickupPlaceId)
     {
-        Booking booking = new Booking();
+        Booking booking = createBooking(i);
         booking.setDate(bookingInfo.getDate());
         booking.setWithReturn(bookingInfo.isWithReturn());
         booking.setForwardPickupPlace(forwardPickupPlaceId);

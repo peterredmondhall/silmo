@@ -7,12 +7,15 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import com.gwt.wizard.client.util.EncryptionUtil;
 import com.gwt.wizard.server.entity.Booking;
 import com.gwt.wizard.shared.model.PlaceInfo;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.Barcode;
+import com.itextpdf.text.pdf.Barcode128;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -65,7 +68,6 @@ public class PdfUtil
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PdfStamper stamper = new PdfStamper(reader, out);
             AcroFields form = stamper.getAcroFields();
-            form.setField(ENCODED_ID, "" + EncryptionUtil.encrypt(String.valueOf(booking.getKey().getId()), EncryptionUtil.KEY));
             form.setField(NUMTAXI, "" + booking.getNumTaxi());
             form.setField(DATE, booking.getDate());
             form.setField(VEHICLETYPE, "Kombi");
@@ -79,6 +81,22 @@ public class PdfUtil
                 form.setField(RETURN1, places.get(booking.getReturnPickupPlace()).getPlace());
                 form.setField(RETURN2, places.get(booking.getReturnPickupPlace()).getPickup());
             }
+
+            // barcode start
+            // CODE 128
+            Barcode128 code128 = new Barcode128();
+            Long bestellung = booking.getKey().getId();
+            code128.setCode(Long.toString(bestellung));
+            // code128.setCode("0123456789\uffffbestellung");
+            code128.setCodeType(Barcode.CODE128_RAW);
+            PdfContentByte contentbyte = stamper.getOverContent(1);
+            Image image = code128.createImageWithBarcode(contentbyte, null, null);
+            image.setAbsolutePosition(0, 0);
+
+            contentbyte.addImage(image);
+
+            // barcode finish
+
             stamper.close();
             reader.close();
             fis.close();
