@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
+import com.gwt.wizard.client.util.ReferenceGenerator;
 import com.gwt.wizard.server.entity.Booking;
 import com.gwt.wizard.server.entity.Config;
 import com.gwt.wizard.server.entity.Place;
@@ -36,8 +37,8 @@ public class BookingManager
         try
         {
             em.getTransaction().begin();
-            int numBookings = getBookings().size();
-            Booking booking = Booking.getBooking(numBookings, bookingInfo, forwardPickupPlaceInfo.getId(), returnPickupPlaceInfo.getId());
+            String reference = ReferenceGenerator.gen(getBookings().size());
+            Booking booking = Booking.getBooking(reference, bookingInfo, forwardPickupPlaceInfo.getId(), returnPickupPlaceInfo.getId());
             em.persist(booking);
             em.getTransaction().commit();
             success = true;

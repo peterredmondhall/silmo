@@ -270,6 +270,23 @@ public class BookingManagementVeiw extends Composite
             }
         };
 
+        // Create requirements column.
+        TextColumn<BookingInfo> taxiBookingStatusColumn = new TextColumn<BookingInfo>()
+        {
+            @Override
+            public String getValue(BookingInfo booking)
+            {
+                if (booking.getTaxiBookingStatus() != null)
+                {
+                    return booking.getTaxiBookingStatus().name();
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+        };
+
         Column<BookingInfo, SafeHtml> viewTaxiOrderPdfColumn = new Column<BookingInfo, SafeHtml>(new SafeHtmlCell())
         {
             @Override
@@ -321,6 +338,8 @@ public class BookingManagementVeiw extends Composite
         bookingManagementTable.addColumn(numTaxiColumn, "No. taxis");
 
         bookingManagementTable.addColumn(requirementsColumn, "Requirements");
+        bookingManagementTable.addColumn(taxiBookingStatusColumn, "Taxi Booking");
+
         bookingManagementTable.addColumn(viewTaxiOrderPdfColumn, "View Taxiorder");
         bookingManagementTable.addColumn(viewFahrenschecksPdfColumn, "View Fahrtenschecks");
         bookingManagementTable.addColumn(orderTaxiColumn, "Order Taxi");
@@ -343,6 +362,7 @@ public class BookingManagementVeiw extends Composite
         bookingManagementTable.setColumnWidth(paxWheelchairColumn, 95, Unit.PX);
         bookingManagementTable.setColumnWidth(numTaxiColumn, 95, Unit.PX);
         bookingManagementTable.setColumnWidth(requirementsColumn, 95, Unit.PX);
+        bookingManagementTable.setColumnWidth(taxiBookingStatusColumn, 95, Unit.PX);
         bookingManagementTable.setColumnWidth(viewTaxiOrderPdfColumn, 80, Unit.PX);
         bookingManagementTable.setColumnWidth(viewFahrenschecksPdfColumn, 95, Unit.PX);
         bookingManagementTable.setColumnWidth(orderTaxiColumn, 80, Unit.PX);

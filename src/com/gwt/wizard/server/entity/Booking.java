@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Key;
 import com.gwt.wizard.server.util.BookingUtil;
 import com.gwt.wizard.shared.model.BookingInfo;
+import com.gwt.wizard.shared.model.BookingInfo.TaxiBookingStatus;
 import com.gwt.wizard.shared.model.PlaceInfo;
 
 @Entity
@@ -41,26 +42,16 @@ public class Booking implements Serializable
     private String requirements = "";
     private Blob pdf;
     private int noTaxi;
-    private String orderStatus;
+    private TaxiBookingStatus taxiBookingStatus;
 
-    private static final String[] NAMES = {
-            "Anton", "Berta", "Charlie", "Charlotte", "Dora", "Emil", "Friedrich", "Gustav", "Heinrich", "Ida",
-            "Julius", "Kaufmann", "Ludwig", "Martha", "Nordpol", "Otto", "Paula", "Quelle", "Richard", "Samuel",
-            "Theodor", "Ulrich", "Viktor", "Wilhelm"
-    };
-
-    private Booking()
+    public TaxiBookingStatus getTaxiBookingStatus()
     {
-
+        return taxiBookingStatus;
     }
 
-    public static Booking createBooking(int i)
+    public void setTaxiBookingStatus(TaxiBookingStatus taxiBookingStatus)
     {
-        int index = i % NAMES.length;
-        Booking booking = new Booking();
-        booking.setReference(NAMES[index]);
-        return booking;
-
+        this.taxiBookingStatus = taxiBookingStatus;
     }
 
     public Key getKey()
@@ -243,9 +234,10 @@ public class Booking implements Serializable
         this.pdf = pdf;
     }
 
-    public static Booking getBooking(int i, BookingInfo bookingInfo, Long forwardPickupPlaceId, Long returnPickupPlaceId)
+    public static Booking getBooking(String reference, BookingInfo bookingInfo, Long forwardPickupPlaceId, Long returnPickupPlaceId)
     {
-        Booking booking = createBooking(i);
+        Booking booking = new Booking();
+        booking.setTaxiBookingStatus(TaxiBookingStatus.INACTIVE);
         booking.setDate(bookingInfo.getDate());
         booking.setWithReturn(bookingInfo.isWithReturn());
         booking.setForwardPickupPlace(forwardPickupPlaceId);
@@ -265,8 +257,10 @@ public class Booking implements Serializable
         booking.setPaxFolcableWheelchair(bookingInfo.getPaxFoldableWheelchair());
         booking.setPaxRollstuhl(bookingInfo.getPaxRollstuhl());
         booking.setRequirements(bookingInfo.getRequirements());
+        booking.setReference(reference);
 
         booking.setNoTaxi(BookingUtil.getNumTaxis(booking.getPax(), booking.getPaxRollstuhl()));
+        booking.setTaxiBookingStatus(bookingInfo.getTaxiBookingStatus());
         return booking;
     }
 
@@ -291,6 +285,8 @@ public class Booking implements Serializable
         bookingInfo.setPaxRollstuhl(getPaxRollstuhl());
         bookingInfo.setNumTaxis(getNumTaxi());
         bookingInfo.setRequirements(getRequirements());
+        bookingInfo.setReference(reference);
+        bookingInfo.setTaxiBookingStatus(taxiBookingStatus);
         return bookingInfo;
 
     }
@@ -304,15 +300,4 @@ public class Booking implements Serializable
     {
         this.noTaxi = noTaxi;
     }
-
-    public String getOrderStatus()
-    {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus)
-    {
-        this.orderStatus = orderStatus;
-    }
-
 }

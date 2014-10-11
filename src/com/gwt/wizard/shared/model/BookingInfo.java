@@ -1,15 +1,22 @@
 package com.gwt.wizard.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.gwt.wizard.client.util.ReferenceGenerator;
 
 public class BookingInfo implements IsSerializable
 {
+    public enum TaxiBookingStatus
+    {
+        INACTIVE,
+        AWAITING_CONFIRMATION,
+        CONFIRMED
+    }
+
     private Long id;
     private String date;
     private boolean withReturn;
     private PlaceInfo forwardPickupPlace;
-    private final String reference = ReferenceGenerator.gen();
+    private String reference;
+
     private String forwardPickupTime;
     private PlaceInfo returnPickupPlace;
     private String returnPickupTime;
@@ -24,6 +31,17 @@ public class BookingInfo implements IsSerializable
     private int paxRollstuhl = 0;
     private String requirements = "";
     private int numTaxis;
+    TaxiBookingStatus taxiBookingStatus;
+
+    public TaxiBookingStatus getTaxiBookingStatus()
+    {
+        return taxiBookingStatus;
+    }
+
+    public void setTaxiBookingStatus(TaxiBookingStatus taxiBookingStatus)
+    {
+        this.taxiBookingStatus = taxiBookingStatus;
+    }
 
     public void setId(Long id)
     {
@@ -38,6 +56,11 @@ public class BookingInfo implements IsSerializable
     public String getReference()
     {
         return reference;
+    }
+
+    public void setReference(String reference)
+    {
+        this.reference = reference;
     }
 
     public boolean isWithReturn()

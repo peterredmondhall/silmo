@@ -6,7 +6,7 @@ public class ProfilInfo implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    public static final String BLUE_FAX = "@gate.blue-fax.com"; // eg "004932224063613@gate.blue-fax.com";
+    // public static final String BLUE_FAX = "@gate.blue-fax.com"; // eg "004932224063613@gate.blue-fax.com";
 
     private String taxiFax;
 

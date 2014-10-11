@@ -1,5 +1,7 @@
 package com.gwt.wizard.servlet;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -10,12 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.gwt.wizard.qrcode.GetImagesFromPDF;
 import com.gwt.wizard.server.BookingManager;
 import com.gwt.wizard.server.BookingServiceImpl;
 import com.gwt.wizard.server.entity.Booking;
 import com.gwt.wizard.server.jpa.EMF;
 import com.gwt.wizard.server.util.Mailer;
 import com.gwt.wizard.server.util.PdfUtil;
+import com.gwt.wizard.shared.model.BookingInfo.TaxiBookingStatus;
 import com.gwt.wizard.shared.model.ProfilInfo;
 
 public class PDFRendererServlet extends HttpServlet
@@ -56,13 +60,16 @@ public class PDFRendererServlet extends HttpServlet
 
                         if (action != null && "sendOrderTaxiEmail".equals(action))
                         {
-                            ProfilInfo profilInfo = bookingManager.getProfil();
+                            // test only
+                            GetImagesFromPDF.encode(new FileInputStream(new File("taxi_order.pdf")));
 
-                            if (Mailer.send(profilInfo.getTaxiFax() + ProfilInfo.BLUE_FAX, "TAXI ORDER", bytes))
+                            ProfilInfo profilInfo = bookingManager.getProfil();
+                            LOGGER.info("faxEmailAddress:" + profilInfo.getTaxiFax());
+                            if (Mailer.send(profilInfo.getTaxiFax(), "bluefax", bytes))
                             {
                                 try
                                 {
-                                    booking.setOrderStatus("AWAITING_CONFIRMATION");
+                                    booking.setTaxiBookingStatus(TaxiBookingStatus.AWAITING_CONFIRMATION);
                                     em.persist(booking);
                                     LOGGER.info("Booking order status set to 'AWAITING_CONFIRMATION' successfully");
                                 }

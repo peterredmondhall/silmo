@@ -13,8 +13,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.Barcode;
-import com.itextpdf.text.pdf.Barcode128;
+import com.itextpdf.text.pdf.BarcodeQRCode;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
@@ -62,8 +61,7 @@ public class PdfUtil
         final FileInputStream fis;
         try
         {
-//            fis = booking.isWithReturn() ? new FileInputStream("template/Taxi_with_fields.pdf") : new FileInputStream("template/TaxiOhneReturn.pdf");
-            fis = booking.isWithReturn() ? new FileInputStream("template/Taxi_with_fields_new.pdf") : new FileInputStream("template/TaxiOhneReturn_new.pdf");
+            fis = booking.isWithReturn() ? new FileInputStream("template/Taxi_with_fields.pdf") : new FileInputStream("template/TaxiOhneReturn.pdf");
             reader = new PdfReader(IOUtils.toByteArray(fis));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PdfStamper stamper = new PdfStamper(reader, out);
@@ -84,13 +82,13 @@ public class PdfUtil
 
             // barcode start
             // CODE 128
-            Barcode128 code128 = new Barcode128();
-            Long bestellung = booking.getKey().getId();
-            code128.setCode(Long.toString(bestellung));
+            Long orderId = booking.getKey().getId();
+            BarcodeQRCode codeOR = new BarcodeQRCode(Long.toString(orderId), 100, 100, null);
+            // codeOR.setCode(Long.toString(orderId));
             // code128.setCode("0123456789\uffffbestellung");
-            code128.setCodeType(Barcode.CODE128_RAW);
+            // codeOR.setCodeType(Barcode.CODE128_RAW);
             PdfContentByte contentbyte = stamper.getOverContent(1);
-            Image image = code128.createImageWithBarcode(contentbyte, null, null);
+            Image image = codeOR.getImage();
             image.setAbsolutePosition(0, 0);
 
             contentbyte.addImage(image);

@@ -25,7 +25,7 @@ import com.gwt.wizard.shared.model.BookingInfo;
 public class Mailer
 {
     private static final Logger log = Logger.getLogger(Mailer.class.getName());
-    private static final String FROM_EMAIL = "enter app email id here, can be found from google console";
+    private static final String FROM_EMAIL = "peterredmondhall@gmail.com";
 
     public static void send(BookingInfo bookingInfo)
     {

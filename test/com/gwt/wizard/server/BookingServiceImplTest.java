@@ -69,6 +69,27 @@ public class BookingServiceImplTest
     }
 
     @Test
+    public void should_create_bookings_with_reference()
+    {
+        BookingInfo bookingInfo = standardBookingInfo();
+        bookingInfo.setForwardPickupPlace(forwardPlaceInfo);
+        bookingInfo.setReturnPickupPlace(returnPlaceIdInfo);
+
+        for (int i = 0; i < 100; i++)
+        {
+            boolean success = service.saveBooking(bookingInfo, false);
+            assertEquals(true, success);
+        }
+        List<BookingInfo> bookings = service.getBookings();
+        assertEquals(100, bookings.size());
+        for (int i = 0; i < 100; i++)
+        {
+            assertEquals(true, bookings.get(i).getReference().length() > 2);
+        }
+
+    }
+
+    @Test
     public void should_create_a_booking_using_unknown_places()
     {
         BookingInfo bookingInfo = standardBookingInfo();

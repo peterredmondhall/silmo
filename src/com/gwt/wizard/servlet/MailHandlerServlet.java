@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-import com.itextpdf.text.pdf.PdfReader;
+import com.gwt.wizard.qrcode.GetImagesFromPDF;
 
 public class MailHandlerServlet extends HttpServlet
 {
@@ -152,7 +152,8 @@ public class MailHandlerServlet extends HttpServlet
                     if (content instanceof InputStream)
                     {
                         InputStream is = (InputStream) content;
-                        PdfReader pdfReader = new PdfReader(is);
+
+                        GetImagesFromPDF.encode(is);
 
 //                        LOGGER.info("ENCODED_ID Field: " + EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY));
 //                        if (EncryptionUtil.decrypt(pdfReader.getAcroFields().getField(PdfUtil.ENCODED_ID), EncryptionUtil.KEY) != null)
@@ -183,7 +184,6 @@ public class MailHandlerServlet extends HttpServlet
 //                            }
 //
 //                        }
-                        LOGGER.info("Taxi Number: " + pdfReader.getAcroFields().getField("NUMTAXI").toString());
                         messageString = IOUtils.toString(is, "UTF-8");
                         LOGGER.info("Multipart Message: " + messageString);
                     }
