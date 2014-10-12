@@ -27,25 +27,6 @@ public class Mailer
     private static final Logger log = Logger.getLogger(Mailer.class.getName());
     private static final String FROM_EMAIL = "peterredmondhall@gmail.com";
 
-    public static void send(BookingInfo bookingInfo)
-    {
-        log.info("Mail:send bookingInfo :" + bookingInfo.getReference());
-
-        String emailMsg = BookingUtil.toEmailText(bookingInfo);
-        String html = "error";
-        if (bookingInfo.isWithReturn())
-        {
-            html = BookingUtil.toEmailHtml(bookingInfo, new File("template/confirmation.html"));
-        }
-        else
-        {
-            html = BookingUtil.toEmailHtml(bookingInfo, new File("template/confirmationNoReturn.html"));
-        }
-        String email = bookingInfo.getOrganizerEmail();
-        send(emailMsg, "hall@silvermobilityservices.com", html, "Silver Mobility");
-        send(emailMsg, email, html, "Silver Mobility");
-    }
-
     private static void send(String msgBody, String toEmail, String htmlBody, String subject)
     {
 
@@ -164,5 +145,41 @@ public class Mailer
 
         }
         return false;
+    }
+
+    public static void sendConfirmation(BookingInfo bookingInfo)
+    {
+        log.info("Mail:send confirmation :" + bookingInfo.getReference());
+
+        String emailMsg = BookingUtil.toEmailText(bookingInfo);
+        String html = "error";
+        if (bookingInfo.isWithReturn())
+        {
+            html = BookingUtil.toEmailHtml(bookingInfo, new File("template/confirmation.html"));
+        }
+        else
+        {
+            html = BookingUtil.toEmailHtml(bookingInfo, new File("template/confirmationNoReturn.html"));
+        }
+        String email = bookingInfo.getOrganizerEmail();
+        send(emailMsg, "hall@silvermobilityservices.com", html, "Silver Mobility");
+        send(emailMsg, email, html, "Silver Mobility");
+    }
+
+    public static void sendChecks(BookingInfo bookingInfo)
+    {
+        log.info("Mail:send bookingInfo :" + bookingInfo.getReference());
+
+        String emailMsg = BookingUtil.toEmailText(bookingInfo);
+        String html = BookingUtil.toFahrtenschecksEmailHtml(bookingInfo, new File("template/fahrtenschecks.html"));
+        String email = bookingInfo.getOrganizerEmail();
+        send(emailMsg, "hall@silvermobilityservices.com", html, "Silver Mobility");
+        send(emailMsg, email, html, "Silver Mobility");
+
+    }
+
+    public static void sendError(String msg)
+    {
+        send(msg, "hall@silvermobilityservices.com", msg, "Silver Mobility");
     }
 }

@@ -2,6 +2,7 @@ package com.gwt.wizard.server;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.gwt.wizard.client.service.BookingService;
@@ -14,6 +15,7 @@ public class BookingServiceImpl extends RemoteServiceServlet implements
         BookingService
 {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(BookingManager.class.getName());
 
     private final static BookingManager bookingManager = new BookingManager();
     private final static PlaceManager placeManager = new PlaceManager();
@@ -21,6 +23,7 @@ public class BookingServiceImpl extends RemoteServiceServlet implements
     @Override
     public Boolean saveBooking(BookingInfo bookingInfo, boolean mailing) throws IllegalArgumentException
     {
+        logger.info(bookingInfo.getDate() + " mailing=" + mailing);
         PlaceInfo forwardPlaceInfo = bookingInfo.getForwardPickupPlace();
         if (forwardPlaceInfo.getId() == null)
         {
@@ -33,14 +36,16 @@ public class BookingServiceImpl extends RemoteServiceServlet implements
         }
 
         boolean success = bookingManager.saveBooking(bookingInfo, forwardPlaceInfo, returnPlaceInfo);
-        if (success && mailing)
+        if (mailing)
         {
-            Mailer.send(bookingInfo);
-        }
-        else
-        {
-            // TODO
-            // Mailer.error(bookingInfo);
+            if (success)
+            {
+                Mailer.sendConfirmation(bookingInfo);
+            }
+            else
+            {
+                Mailer.sendError("error saving " + bookingInfo.getId());
+            }
         }
         return success;
     }

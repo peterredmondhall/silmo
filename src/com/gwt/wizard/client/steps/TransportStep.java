@@ -6,8 +6,6 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.gwt.wizard.client.core.WizardStep;
 import com.gwt.wizard.client.steps.ui.TransportStepUi;
 import com.gwt.wizard.client.steps.ui.TransportStepUi.PassengerDetail;
@@ -65,16 +63,6 @@ public class TransportStep implements WizardStep
         bookingInfo.setWithReturn(ui.getWithReturn());
 
         return true;
-    }
-
-    private String getPickup(ListBox listBox, SuggestBox suggestBox)
-    {
-        String selection = listBox.getItemText(listBox.getSelectedIndex());
-        if (selection.equals(TransportStepUi.OTHER))
-        {
-            selection = suggestBox.getText();
-        }
-        return selection;
     }
 
     @Override

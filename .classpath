@@ -50,5 +50,8 @@
 	<classpathentry kind="var" path="APPENGINE_SDK/lib/impl/appengine-api.jar"/>
 	<classpathentry kind="var" path="APPENGINE_SDK/lib/testing/appengine-testing.jar"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/pdfbox-1.8.7.jar" sourcepath="/pdfbox"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/core-3.1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -2,8 +2,9 @@ package com.gwt.wizard.server.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,12 +81,30 @@ public class BookingUtil
         return html;
     }
 
+    public static String toFahrtenschecksEmailHtml(BookingInfo bookingInfo, File file)
+    {
+        String html = readFile(file);
+        html = html.replace("BOOKING_ID", bookingInfo.getReference());
+        if (bookingInfo.getNumTaxis() > 1)
+        {
+            html = html.replace("NUM_TAXIS", "Es kommen " + bookingInfo.getNumTaxis() + " Taxis.");
+        }
+        else
+        {
+            html = html.replace("NUM_TAXIS", "Es kommt " + bookingInfo.getNumTaxis() + " Taxi.");
+        }
+
+        return html;
+    }
+
     public static String readFile(File file)
     {
         try
         {
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(file)))
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(file), "UTF8"));)
             {
                 String line = null;
                 StringBuilder stringBuilder = new StringBuilder();
@@ -106,14 +125,11 @@ public class BookingUtil
         }
     }
 
+    // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+    static int[] taxis = { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6 };
+
     public static int getNumTaxis(int pax, int wheelies)
     {
-        int noPaxFoot = pax - wheelies;
-        int noTaxi = noPaxFoot / 3;
-        if (noPaxFoot % 3 > 0)
-        {
-            noTaxi++;
-        }
-        return noTaxi;
+        return taxis[pax - wheelies];
     }
 }

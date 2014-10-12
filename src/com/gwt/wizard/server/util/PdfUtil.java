@@ -1,16 +1,13 @@
 package com.gwt.wizard.server.util;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import com.gwt.wizard.server.entity.Booking;
-import com.gwt.wizard.shared.model.PlaceInfo;
+import com.gwt.wizard.shared.model.BookingInfo;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.BarcodeQRCode;
@@ -21,6 +18,7 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 public class PdfUtil
 {
+    private final Logger log = Logger.getLogger("PdfUtil");
 
     public final static String ENCODED_ID = "ENCODED_ID";
     public final static String UUID = "UUID";
@@ -55,34 +53,34 @@ public class PdfUtil
     public final static String REQUIREMENTS = "REQUIREMENTS";
 
     @SuppressWarnings("resource")
-    public static byte[] generateTaxiOrder(Booking booking, Map<Long, PlaceInfo> places)
+    public byte[] generateTaxiOrder(BookingInfo bookingInfo)
     {
         PdfReader reader;
         final FileInputStream fis;
         try
         {
-            fis = booking.isWithReturn() ? new FileInputStream("template/Taxi_with_fields.pdf") : new FileInputStream("template/TaxiOhneReturn.pdf");
+            fis = bookingInfo.isWithReturn() ? new FileInputStream("template/Taxi_with_fields.pdf") : new FileInputStream("template/TaxiOhneReturn.pdf");
             reader = new PdfReader(IOUtils.toByteArray(fis));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PdfStamper stamper = new PdfStamper(reader, out);
             AcroFields form = stamper.getAcroFields();
-            form.setField(NUMTAXI, "" + booking.getNumTaxi());
-            form.setField(DATE, booking.getDate());
+            form.setField(NUMTAXI, "" + bookingInfo.getNumTaxis());
+            form.setField(DATE, bookingInfo.getDate());
             form.setField(VEHICLETYPE, "Kombi");
-            form.setField(FORWARDTIME, booking.getForwardPickupTime());
-            form.setField(FORWARD1, places.get(booking.getForwardPickupPlace()).getPlace());
-            form.setField(FORWARD2, places.get(booking.getForwardPickupPlace()).getPickup());
-            form.setField(PASSNAME, booking.getBegleiterName());
-            if (booking.isWithReturn())
+            form.setField(FORWARDTIME, bookingInfo.getForwardPickupTime());
+            form.setField(FORWARD1, bookingInfo.getForwardPickupPlace().getPickup());
+            form.setField(FORWARD2, bookingInfo.getForwardPickupPlace().getPickup());
+            form.setField(PASSNAME, bookingInfo.getCompanionName());
+            if (bookingInfo.isWithReturn())
             {
-                form.setField(RETURNTIME, booking.getReturnPickupTime());
-                form.setField(RETURN1, places.get(booking.getReturnPickupPlace()).getPlace());
-                form.setField(RETURN2, places.get(booking.getReturnPickupPlace()).getPickup());
+                form.setField(RETURNTIME, bookingInfo.getReturnPickupTime());
+                form.setField(RETURN1, bookingInfo.getReturnPickupPlace().getPlace());
+                form.setField(RETURN2, bookingInfo.getReturnPickupPlace().getPickup());
             }
 
             // barcode start
             // CODE 128
-            Long orderId = booking.getKey().getId();
+            Long orderId = bookingInfo.getId();
             BarcodeQRCode codeOR = new BarcodeQRCode(Long.toString(orderId), 100, 100, null);
             // codeOR.setCode(Long.toString(orderId));
             // code128.setCode("0123456789\uffffbestellung");
@@ -101,57 +99,65 @@ public class PdfUtil
 
             return out.toByteArray();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (DocumentException e)
-        {
-            // TODO Auto-generated catch block
+            String msg = "error generating taxiorder";
+            Mailer.sendError(msg);
+            log.severe(msg);
             e.printStackTrace();
         }
         return null;
     }
 
-    public static byte[] generateFahrtenscheck(Booking booking, Map<Long, PlaceInfo> places) throws Exception
+    public byte[] generateFahrtenscheck(BookingInfo bookingInfo)
     {
-        Document doc = new Document();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        PdfSmartCopy copy = new PdfSmartCopy(doc, bos);
-        doc.open();
-
-        PdfReader reader;
-        PdfStamper stamper;
-        AcroFields form;
-        ByteArrayOutputStream baos;
-
-        for (int i = 0; i < booking.getNumTaxi() * 2; i++)
+        try
         {
-            boolean forward = i < booking.getNumTaxi();
-            byte[] input = IOUtils.toByteArray(new FileInputStream("template/Fahrtenscheck_with_fields.pdf"));
-            reader = new PdfReader(input);
-            baos = new ByteArrayOutputStream();
-            stamper = new PdfStamper(reader, baos);
-            form = stamper.getAcroFields();
-            // methods to fill forms
-            form.setField(DATE, booking.getDate());
-            String route = places.get(booking.getForwardPickupPlace()).getPlace() + " -> " + places.get(booking.getReturnPickupPlace()).getPlace();
-            if (!forward)
-                route = places.get(booking.getReturnPickupPlace()).getPlace() + " -> " + places.get(booking.getForwardPickupPlace()).getPlace();
+            Document doc = new Document();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            PdfSmartCopy copy = new PdfSmartCopy(doc, bos);
+            doc.open();
 
-            form.setField(ROUTE, route);
-            form.setField(NAME, booking.getBegleiterName());
+            PdfReader reader;
+            PdfStamper stamper;
+            AcroFields form;
+            ByteArrayOutputStream baos;
 
-            stamper.setFormFlattening(true);
-            stamper.close();
+            for (int i = 0; i < bookingInfo.getNumTaxis() * 2; i++)
+            {
+                boolean forward = i < bookingInfo.getNumTaxis();
+                byte[] input = IOUtils.toByteArray(new FileInputStream("template/Fahrtenscheck_with_fields.pdf"));
+                reader = new PdfReader(input);
+                baos = new ByteArrayOutputStream();
+                stamper = new PdfStamper(reader, baos);
+                form = stamper.getAcroFields();
+                // methods to fill forms
+                form.setField(DATE, bookingInfo.getDate());
+                String route = bookingInfo.getForwardPickupPlace().getPlace() + " -> " + bookingInfo.getReturnPickupPlace().getPlace();
+                if (!forward)
+                    route = bookingInfo.getReturnPickupPlace().getPlace() + " -> " + bookingInfo.getForwardPickupPlace().getPlace();
 
-            reader = new PdfReader(baos.toByteArray());
-            copy.addPage(copy.getImportedPage(reader, 1));
+                form.setField(ROUTE, route);
+                form.setField(NAME, bookingInfo.getCompanionName());
+
+                stamper.setFormFlattening(true);
+                stamper.close();
+
+                reader = new PdfReader(baos.toByteArray());
+                copy.addPage(copy.getImportedPage(reader, 1));
+            }
+
+            doc.close();
+            return bos.toByteArray();
         }
-
-        doc.close();
-        return bos.toByteArray();
+        catch (Exception e)
+        {
+            String msg = "error generating schecks";
+            Mailer.sendError(msg);
+            log.severe(msg);
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

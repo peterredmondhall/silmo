@@ -88,19 +88,26 @@ public class TransportStepUi extends Composite implements Showable
 
     private List<PlaceInfo> placeList;
 
+    private PlaceInfo getPickup(ListBox listBox, SuggestBox suggestBox)
+    {
+        PlaceInfo placeInfo = null;
+        String selection = listBox.getItemText(listBox.getSelectedIndex());
+        if (selection.equals(TransportStepUi.OTHER))
+        {
+            String address = suggestBox.getText();
+            placeInfo = new PlaceInfo(City.AUGSBURG.name(), address);
+            placeInfo.setPickup(address);
+        }
+        else
+        {
+            placeInfo = placeList.get(listBox.getSelectedIndex());
+        }
+        return placeInfo;
+    }
+
     public PlaceInfo getForwardPickup()
     {
-        return placeList.get(forwardPickupBox.getSelectedIndex());
-    }
-
-    public SuggestBox getForwardSuggestionBox()
-    {
-        return forwardPickupSuggestionBox;
-    }
-
-    public SuggestBox getReturnSuggestionBox()
-    {
-        return returnPickupSuggestionBox;
+        return getPickup(forwardPickupBox, forwardPickupSuggestionBox);
     }
 
     public ListBox getForwardTimeBox()
@@ -115,7 +122,7 @@ public class TransportStepUi extends Composite implements Showable
 
     public PlaceInfo getReturnPickup()
     {
-        return placeList.get(returnPickupBox.getSelectedIndex());
+        return getPickup(returnPickupBox, returnPickupSuggestionBox);
     }
 
     public TransportStepUi()

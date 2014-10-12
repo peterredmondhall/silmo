@@ -317,6 +317,16 @@ public class BookingManagementVeiw extends Composite
                 return sb.toSafeHtml();
             }
         };
+        Column<BookingInfo, SafeHtml> sendChecksColumn = new Column<BookingInfo, SafeHtml>(new SafeHtmlCell())
+        {
+            @Override
+            public SafeHtml getValue(BookingInfo obj)
+            {
+                SafeHtmlBuilder sb = new SafeHtmlBuilder();
+                sb.appendHtmlConstant("<a href='/gwt_wizard/renderpdf?action=sendChecks&key=" + obj.getId() + "'" + "target='_blank'>Send checks</a>");
+                return sb.toSafeHtml();
+            }
+        };
         bookingManagementTable.setTableLayoutFixed(true);
         // Add the columns.
         bookingManagementTable.addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
@@ -343,6 +353,7 @@ public class BookingManagementVeiw extends Composite
         bookingManagementTable.addColumn(viewTaxiOrderPdfColumn, "View Taxiorder");
         bookingManagementTable.addColumn(viewFahrenschecksPdfColumn, "View Fahrtenschecks");
         bookingManagementTable.addColumn(orderTaxiColumn, "Order Taxi");
+        bookingManagementTable.addColumn(sendChecksColumn, "Send Checks");
 
         bookingManagementTable.setColumnWidth(checkColumn, 40, Unit.PX);
         bookingManagementTable.setColumnWidth(dateColumn, 65, Unit.PX);
@@ -366,6 +377,7 @@ public class BookingManagementVeiw extends Composite
         bookingManagementTable.setColumnWidth(viewTaxiOrderPdfColumn, 80, Unit.PX);
         bookingManagementTable.setColumnWidth(viewFahrenschecksPdfColumn, 95, Unit.PX);
         bookingManagementTable.setColumnWidth(orderTaxiColumn, 80, Unit.PX);
+        bookingManagementTable.setColumnWidth(sendChecksColumn, 80, Unit.PX);
 
         // Create a data provider.
         ListDataProvider<BookingInfo> dataProvider = new ListDataProvider<BookingInfo>();

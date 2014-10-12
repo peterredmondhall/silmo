@@ -266,12 +266,20 @@ public class Booking implements Serializable
 
     public BookingInfo getBookingInfo(PlaceInfo forwardPlaceInfo, PlaceInfo returnPlaceInfo)
     {
+        BookingInfo bookingInfo = getInfo();
+        bookingInfo.setForwardPickupPlace(forwardPlaceInfo);
+        bookingInfo.setReturnPickupPlace(returnPlaceInfo);
+
+        return bookingInfo;
+
+    }
+
+    private BookingInfo getInfo()
+    {
         BookingInfo bookingInfo = new BookingInfo();
         bookingInfo.setId(getKey().getId());
         bookingInfo.setDate(getDate());
         bookingInfo.setWithReturn(isWithReturn());
-        bookingInfo.setForwardPickupPlace(forwardPlaceInfo);
-        bookingInfo.setReturnPickupPlace(returnPlaceInfo);
 
         bookingInfo.setForwardPickupTime(getForwardPickupTime());
         bookingInfo.setReturnPickupTime(getReturnPickupTime());
