@@ -1,5 +1,6 @@
 package com.gwt.wizard.server;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -59,6 +60,11 @@ public class BookingServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<PlaceInfo> getPlaceList()
     {
+        List<PlaceInfo> result = placeManager.getPlaceList();
+        if (result.size() == 0)
+        {
+            placeManager.loadPlaces(new File("data/places.txt"));
+        }
         return placeManager.getPlaceList();
     }
 

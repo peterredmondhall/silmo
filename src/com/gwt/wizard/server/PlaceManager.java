@@ -2,6 +2,10 @@ package com.gwt.wizard.server;
 
 import static com.google.gwt.thirdparty.guava.common.collect.Lists.newArrayList;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import com.gwt.wizard.server.entity.Place;
 import com.gwt.wizard.server.jpa.EMF;
@@ -20,6 +25,8 @@ import com.gwt.wizard.shared.model.PlaceInfo;
 public class PlaceManager
 {
     private static final Logger logger = Logger.getLogger(PlaceManager.class.getName());
+
+    private File dataFile;
 
     private static EntityManager getEntityManager()
     {
@@ -39,18 +46,29 @@ public class PlaceManager
         return places;
     }
 
+    public void setDataFile(File file)
+    {
+        this.dataFile = file;
+
+    }
+
     public List<PlaceInfo> getPlaceList()
     {
         EntityManager em = getEntityManager();
         List<PlaceInfo> placeList = newArrayList();
         try
         {
-            @SuppressWarnings("unchecked")
-            List<Place> resultList = em.createQuery("select t from Place t").getResultList();
+            Query query = em.createQuery("select t from Place t");
+            List<Place> resultList = query.getResultList();
+
             for (Place place : resultList)
             {
                 placeList.add(place.getInfo());
             }
+        }
+        catch (Exception ex)
+        {
+            logger.severe("could not read in places");
         }
         finally
         {
@@ -58,6 +76,39 @@ public class PlaceManager
         }
 
         return placeList;
+    }
+
+    public void loadPlaces(File dataFile)
+    {
+        EntityManager em = getEntityManager();
+        try
+        {
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(dataFile), "UTF8"));
+
+            String str;
+
+            while ((str = in.readLine()) != null)
+            {
+                String[] place = str.split(",");
+                PlaceInfo p = new PlaceInfo(place[0], place[2]);
+                p.setPickup(place[1]);
+                addPlace(p);
+            }
+
+            in.close();
+        }
+        catch (Exception ex)
+        {
+            logger.severe("could not read in places");
+        }
+        finally
+        {
+            em.close();
+        }
+
     }
 
     public PlaceInfo addPlace(PlaceInfo placeInfo)

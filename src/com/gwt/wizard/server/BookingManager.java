@@ -93,8 +93,11 @@ public class BookingManager
             List<Booking> resultList = em.createQuery("select t from Booking t").getResultList();
             for (Booking booking : resultList)
             {
-                PlaceInfo forwardPlaceInfo = em.find(Place.class, booking.getForwardPickupPlace()).getInfo();
-                PlaceInfo returnPlaceInfo = em.find(Place.class, booking.getReturnPickupPlace()).getInfo();
+                Place forwardPickupPlace = em.find(Place.class, booking.getForwardPickupPlace());
+                Place returnPickupPlace = em.find(Place.class, booking.getReturnPickupPlace());
+
+                PlaceInfo forwardPlaceInfo = forwardPickupPlace.getInfo();
+                PlaceInfo returnPlaceInfo = returnPickupPlace.getInfo();
                 BookingInfo bookingInfo = booking.getBookingInfo(forwardPlaceInfo, returnPlaceInfo);
                 bookings.add(bookingInfo);
             }

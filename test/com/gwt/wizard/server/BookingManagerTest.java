@@ -1,14 +1,14 @@
 package com.gwt.wizard.server;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.gwt.wizard.shared.model.BookingInfo;
 import com.gwt.wizard.shared.model.PlaceInfo;
-import com.gwt.wizard.shared.model.PlaceInfo.City;
 
 public class BookingManagerTest
 {
@@ -26,32 +26,23 @@ public class BookingManagerTest
     public void setUp()
     {
         helper.setUp();
-        forwardPlaceInfo = pm.savePlace(new PlaceInfo(City.AUGSBURG.name(), "forward"));
-        returnPlaceIdInfo = pm.savePlace(new PlaceInfo(City.AUGSBURG.name(), "return"));
     }
 
     @After
     public void tearDown()
     {
-        pm.deletePlace(forwardPlaceInfo.getId());
-        pm.deletePlace(returnPlaceIdInfo.getId());
 
         helper.tearDown();
     }
 
-    private BookingInfo standardBookingInfo()
-    {
-        BookingInfo bookingInfo = new BookingInfo();
-        bookingInfo.setDate("21.01.1999");
-        bookingInfo.setForwardPickupPlace(new PlaceInfo(City.AUGSBURG.name(), "forward"));
-        bookingInfo.setReturnPickupPlace(new PlaceInfo(City.AUGSBURG.name(), "return"));
-        return bookingInfo;
-    }
-
     @Test
-    public void should_create_a_booking_using_known_places()
+    public void should_get_a_list_of_places_from_file()
     {
-        // TODO
+        for (PlaceInfo placeInfo : pm.getPlaceList())
+        {
+            pm.deletePlace(placeInfo.getId());
+        }
+        pm.loadPlaces(new File("war/data/places.txt"));
     }
 
 }
